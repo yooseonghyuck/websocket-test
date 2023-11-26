@@ -1,14 +1,25 @@
 const io = require('socket.io-client')
 
-const socket = io.connect('http://localhost:8081/game', { // room 네임스페이스
+const socket = io.connect('ws://localhost:8088/game', { // room 네임스페이스
+    secure: true ,   
+    reconnect: true,
+    rejectUnauthorized: true,
     reconnectionDelayMax: 10000,
-    //  path: '/socket.io'
+    transports: ['websocket'],
   })
 
 
 async function main () {
-    const gameId = "1313b538-ddcd-4e0a-aaa8-f79fd7d11555"
+    const gameId = "9817e579-e888-4c65-b6ce-c2f76ded6b87"
     // 연결 이벤트 처리
+    socket.on('connect_failed', function(){
+        console.log('Connection Failed');
+    });
+
+    socket.on("connect_error", (err) => {
+        console.log(err.message); // prints the message associated with the error
+    });
+
     socket.on('connect', () => {
         // 서버로부터 연결되었다는 메시지를 받습니다.
         socket.on('message', (message) => {
@@ -20,7 +31,7 @@ async function main () {
         taskName: "join",
         data: { 
             gameId: gameId, // 참가하려고 하는 game ID
-            userId: "ea207555-b57f-4e42-ba7c-bdff26924c2d"  // 참가하려고 하는 user ID
+            userId: "18b52d00-9986-4511-bccd-f1d313bd19ef"  // 참가하려고 하는 user ID
         } 
     }
     // room 참가
